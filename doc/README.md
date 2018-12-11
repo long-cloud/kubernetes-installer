@@ -43,6 +43,10 @@ systemctl disable firewalld
 
 #10.1.0.0/16为容器网段
 -A INPUT -s 10.1.0.0/16 -j ACCEPT
+
+#注释掉如下两行
+#-A INPUT -j REJECT --reject-with icmp-host-prohibited
+#-A FORWARD -j REJECT --reject-with icmp-host-prohibited
 ````
 
 保存规则后，执行`systemctl restart iptables`重启iptables服务。
