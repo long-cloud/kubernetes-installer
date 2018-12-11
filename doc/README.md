@@ -176,15 +176,14 @@ kubeconfig配置文件
 apiVersion: v1
 kind: Config
 clusters:
-- cluster:
-server: http://192.168.56.203:8080/ #此地址需要换成k8s master 节点的ip地址
-name: local
+  - cluster:
+      server: http://192.168.56.203:8080/ #此地址需要换成k8s master 节点的ip地址
+    name: local
 contexts:
-- context:
-cluster: local
-name: local
+  - context:
+      cluster: local
+    name: local
 current-context: local
-record: true
 ````
 
 保存kubeconfig后，按照如下配置
