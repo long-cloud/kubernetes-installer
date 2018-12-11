@@ -90,14 +90,15 @@ vi /etc/hosts
 其中`<your_master_ip>`填写kubernetes master节点的IP地址。
 
 jenkins首次登陆后，需要进行如下配置
-**2.1 获取登录密码 **
+
+**2\.1 获取登录密码**
 
 jenkins安装成功后，管理员密码默认写入到文件中，您可通过如下命令获取密码。登录master节点，执行如下命令
 
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 使用此密码jenkins。
 
-**2.2 安装插件 **
+**2\.2 安装插件**
 
 登录成功后，第一步选择需要安装的插件。我们选择“安装推荐的插件”。然后等待系统自动完成。
 
@@ -110,20 +111,20 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 最后点击“开始使用jenkins”。
 
-**2.3 安装docker与kubernetes插件 **
+**2\.3安装docker与kubernetes插件**
 
 打开“系统管理”->“插件管理”。选择“可选插件”，搜索“CloudBees Docker Build and Publish”插件，勾选后点击“直接安装”。
 
 同样，搜索“Kubernetes Continuous Deploy”与“Build Timestamp”，勾选后点击“直接安装”。
 
-**2.4 配置Build Timestamp插件 **
+**2\.4 配置Build Timestamp插件**
 
 此时间戳将作为docker镜像的tag。
 
 打开“系统管理”->“系统设置”。
 ![](assets/4.png)
 
-**2.5 配置全局maven **
+**2\.5 配置全局maven**
 
 打开“系统管理”->“全局工具配置”。点击“新增Maven”，如下图配置（安装时，已经在对应目录中安装好maven，这里只需要配置对应路径即可）
 
@@ -132,33 +133,33 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 #### 3. 开始自动化构建第一个应用程序 ####
 
-**3.1 新建“helloworld-k8s”任务 **
+**3\.1 新建“helloworld-k8s”任务**
 
 回到主菜单。点击“新建任务”。名称为“helloworld-k8s”。
 ![](assets/2.png)
 
-**3.2 配置“参数化构建过程” **
+**3\.2 配置“参数化构建过程”**
 
 配置两个字符参数（下面构建过程中使用）：appName与registryAddress两个参数。
 ![](assets/7.png)
 
-**3.3 选择源代码仓库地址 **
+**3\.3 选择源代码仓库地址**
 
 此处，我们演示的git仓库地址为：https://github.com/long-cloud/helloworld-k8s.git
 ![](/assets/3.png)
 
-**3.4增加构建步骤-maven打包 **
+**3\.4增加构建步骤-maven打包**
 
 点击“增加构建步骤”->“调用顶层maven目标”。按照下图所示配置
 ![](assets/6.png)
 
 
-**3.5 增加构建步骤-Docker Build and Publish **
+**3\.5 增加构建步骤-Docker Build and Publish**
 
 点击“增加构建步骤”->“Docker Build and Publish”。按照下图所示配置
 ![](assets/8.png)
 
-**3.6增加构建步骤-Deploy to Kubernetes **
+**3\.6增加构建步骤-Deploy to Kubernetes**
 
 点击“增加构建步骤”->“Deploy to Kubernetes”。
 ![](/assets/9.png)
@@ -188,13 +189,13 @@ record: true
 
 配置完成后，保存任务配置信息。
 
-**3.7 构建任务 **
+**3\.7 构建任务**
 
 点击“Build with Parameters”按钮，开始构建任务。
 
 可以通过“控制台输出”查看构建过程。
 
-3.8 访问发布helloworld-k8s。
+**3\.8 访问发布helloworld-k8s**
 
 地址： `http://< your_master_ip >/helloworld-k8s/`
 如果浏览器显示`Hello World Demo @龙云`字样，说明helloworld-k8s应用已经正确运行。
@@ -215,7 +216,7 @@ kube-node-installer.sh 192.168.56.203
 kubernetes包括如下几个常用资源对象
 
 | 序号 | 资源类型 | 资源名称 | 描述 |
-|:|: |:|: |
+|:---|:---|:---|:---|
 |1|namespace|命名空间|多租户时使用，不同用户使用不同的命名空间|
 |2|node|节点|集群运行的节点|
 |3|deployment|部署|新的副本控制器。相对于ReplicationController，deployment能够平滑升级|
@@ -227,7 +228,7 @@ kubernetes包括如下几个常用资源对象
 
 对于如上资源，kubernetes提供了如下几个常用命令
 
-**1. 查看所有指定类型资源 **
+**1. 查看所有指定类型资源**
 
 `kubectl get <resourceType>`
 
@@ -237,27 +238,32 @@ kubernetes包括如下几个常用资源对象
 `kubectl get pods -o wide # 使用wide格式输出`
 `kubectl get pods -o yaml #使用yaml格式输出`
 
-**2. 查看资源详细信息 **
+**2. 查看资源详细信息**
+
 `kubectl describe <resourceType> <resourceName>`
-例如
-查看pod名称为`helloworld-k8s-6fff87fc75-89j9m`的详细信息
+
+例如：查看pod名称为`helloworld-k8s-6fff87fc75-89j9m`的详细信息
+
 `kubectl describe pods helloworld-k8s-6fff87fc75-89j9m`
 
-**3. 创建资源 **
+**3. 创建资源**
+
 `kubectl create -f <resourceFile>`
 
-例如：
-创建一个deployment资源
+例如：创建一个deployment资源
 
 `kubectl create -f bus_deployment.yaml`
 
-**4. 更新资源 **
+**4. 更新资源**
+
 `kubectl apply -f <resourceFile>`
 
-**5. 删除资源 **
+**5. 删除资源**
+
 `kubectl delete -f <resourceFile>`
 
 我们还可以使用kubernetes Restful API操作资源。
+
 详细接口参见kubernetes[官方文档](https://kubernetes.io/docs/reference/generated/kubernetes-api/v1.10/)。
 
 
@@ -267,9 +273,12 @@ kubernetes包括如下几个常用资源对象
 1. 容器地址与宿主机地址冲突了怎么办？
 
 答：系统默认从`10.1.0.0`网段为容器分配地址。
-修改flannel服务网段。执行命令`etcdctl set /coreos.com/network/config '{"Network":"10.1.0.0/16"}'`，将`10.1.0.0/16`替换成期望的容器地址网段，譬如：`192.168.0.0/16`。
-修改kubernetes service网段。修改`/etc/kubernetes/apiserver`配置文件中的`KUBE_SERVICE_ADDRESSES_RANGE`配置，将此地址网段修改为期望的地址网段。修改后执行`systemctl restart kube-apiserver kube-controller-manager kube-scheduler`重启此三个服务。
 
+修改flannel服务网段。执行命令`etcdctl set /coreos.com/network/config '{"Network":"10.1.0.0/16"}'`，将`10.1.0.0/16`替换成期望的容器地址网段，
+譬如：`192.168.0.0/16`。
+
+修改kubernetes service网段。修改`/etc/kubernetes/apiserver`配置文件中的`KUBE_SERVICE_ADDRESSES_RANGE`配置，将此地址网段修改为期望的地址网段。
+修改后执行`systemctl restart kube-apiserver kube-controller-manager kube-scheduler`重启此三个服务。
 
 
 
