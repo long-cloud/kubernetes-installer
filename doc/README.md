@@ -10,7 +10,7 @@
 操作系统版本： CentOS 7.4；
 内存：至少4GB；
 
-** 2. 确保服务器上已经正确安装iptables服务。**
+**2. 确保服务器上已经正确安装iptables服务。**
 
 执行命令 `systemctl status iptables` 检查iptables是否正确安装。如果显示`Unit iptables.service could not be found.`说明没有安装iptables，执行如下命令安装iptables服务。
 ````
@@ -22,7 +22,7 @@ systemctl restart iptables
 chkconfig iptables on
 ````
 
-** 注意：CentOS 7.0 以上版本默认使用firewalld作为系统默认防火墙，此处我们需要禁用firewalld服务。使用如下命令禁用firewalld防火墙。**
+**注意：CentOS 7.0 以上版本默认使用firewalld作为系统默认防火墙，此处我们需要禁用firewalld服务。使用如下命令禁用firewalld防火墙。**
 ````
 # Stop firewalld service
 systemctl stop firewalld
@@ -46,7 +46,7 @@ systemctl disable firewalld
 
 保存规则后，执行`systemctl restart iptables`重启iptables服务。
 
-** 3. 确保集群中每台机器有唯一的主机名称。**
+**3. 确保集群中每台机器有唯一的主机名称。**
 
 使用如下命令修改主机名称
 
@@ -54,7 +54,7 @@ hostname <your_hostname>
 
 修改`/etc/hostname`文件，使其永久生效。
 
-** 4. 配置hosts文件。**
+**4. 配置hosts文件。**
 
 新增如下解析
 vi /etc/hosts
@@ -63,7 +63,7 @@ vi /etc/hosts
 ````
 将127.0.0.1 换成kubernetes master节点实际的IP地址。
 
-** 5. 确保机器能够连接互联网。**
+**5. 确保机器能够连接互联网。**
 
 
 ### （二） 安装kubernetes master节点
@@ -79,81 +79,91 @@ vi /etc/hosts
 系统默认安装了kubernetes-dashboard与jenkins服务。您可以通过如下地址访问
 
 #### 1. kubernetes-dashboard ####
+
 访问地址： `http://< your_master_ip >:8080/api/v1/namespaces/kube-system/services/https:kubernetes-dashboard:/proxy/#!/login`
 其中`<your_master_ip>`填写kubernetes master节点的IP地址。打开后，直接点击“跳过”按钮，即可登录dashboard。
 
 #### 2. jenkins ####
+
 访问地址：`http://< your_master_ip > :8010`
 其中`<your_master_ip>`填写kubernetes master节点的IP地址。
 
 jenkins首次登陆后，需要进行如下配置
-** 2.1 获取登录密码 **
+**2.1 获取登录密码 **
+
 jenkins安装成功后，管理员密码默认写入到文件中，您可通过如下命令获取密码。登录master节点，执行如下命令
 
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 使用此密码jenkins。
 
-** 2.2 安装插件 **
+**2.2 安装插件 **
 
 登录成功后，第一步选择需要安装的插件。我们选择“安装推荐的插件”。然后等待系统自动完成。
 
 创建第一个管理员用户
 这里我们使用用户名为：admin,密码也为：admin，来创建管理员用户。然后点击"保存并完成"。
 
-![](/assets/1.png)
+![](assets/1.png)
 
 实例配置，使用默认地址即可。
 
 最后点击“开始使用jenkins”。
 
-** 2.3 安装docker与kubernetes插件 **
+**2.3 安装docker与kubernetes插件 **
 
 打开“系统管理”->“插件管理”。选择“可选插件”，搜索“CloudBees Docker Build and Publish”插件，勾选后点击“直接安装”。
 
 同样，搜索“Kubernetes Continuous Deploy”与“Build Timestamp”，勾选后点击“直接安装”。
 
-** 2.4 配置Build Timestamp插件 **
+**2.4 配置Build Timestamp插件 **
+
 此时间戳将作为docker镜像的tag。
 
 打开“系统管理”->“系统设置”。
-![](/assets/4.png)
+![](assets/4.png)
 
-** 2.5 配置全局maven **
+**2.5 配置全局maven **
 
 打开“系统管理”->“全局工具配置”。点击“新增Maven”，如下图配置（安装时，已经在对应目录中安装好maven，这里只需要配置对应路径即可）
 
-![](/assets/5.png)
+![](assets/5.png)
 
 
 #### 3. 开始自动化构建第一个应用程序 ####
 
-** 3.1 新建“helloworld-k8s”任务 **
+**3.1 新建“helloworld-k8s”任务 **
+
 回到主菜单。点击“新建任务”。名称为“helloworld-k8s”。
-![](/assets/2.png)
+![](assets/2.png)
 
-** 3.2 配置“参数化构建过程” **
+**3.2 配置“参数化构建过程” **
+
 配置两个字符参数（下面构建过程中使用）：appName与registryAddress两个参数。
-![](/assets/7.png)
+![](assets/7.png)
 
-** 3.3 选择源代码仓库地址 **
+**3.3 选择源代码仓库地址 **
+
 此处，我们演示的git仓库地址为：https://github.com/long-cloud/helloworld-k8s.git
 ![](/assets/3.png)
 
-** 3.4 增加构建步骤-maven打包 **
+**3.4增加构建步骤-maven打包 **
+
 点击“增加构建步骤”->“调用顶层maven目标”。按照下图所示配置
-![](/assets/6.png)
+![](assets/6.png)
 
 
-** 3.5 增加构建步骤-Docker Build and Publish **
+**3.5 增加构建步骤-Docker Build and Publish **
+
 点击“增加构建步骤”->“Docker Build and Publish”。按照下图所示配置
-![](/assets/8.png)
+![](assets/8.png)
 
-** 3.6 增加构建步骤-Deploy to Kubernetes **
+**3.6增加构建步骤-Deploy to Kubernetes **
+
 点击“增加构建步骤”->“Deploy to Kubernetes”。
 ![](/assets/9.png)
 
 新增Kubeconfig，点击“Add”->"jenkins"。如下图所示
-![](/assets/10.png)
+![](assets/10.png)
 
 kubeconfig配置文件
 
@@ -177,7 +187,7 @@ record: true
 
 配置完成后，保存任务配置信息。
 
-** 3.7 构建任务 **
+**3.7 构建任务 **
 
 点击“Build with Parameters”按钮，开始构建任务。
 
@@ -216,7 +226,7 @@ kubernetes包括如下几个常用资源对象
 
 对于如上资源，kubernetes提供了如下几个常用命令
 
-** 1. 查看所有指定类型资源 **
+**1. 查看所有指定类型资源 **
 
 `kubectl get <resourceType>`
 
@@ -226,13 +236,13 @@ kubernetes包括如下几个常用资源对象
 `kubectl get pods -o wide # 使用wide格式输出`
 `kubectl get pods -o yaml #使用yaml格式输出`
 
-** 2. 查看资源详细信息 **
+**2. 查看资源详细信息 **
 `kubectl describe <resourceType> <resourceName>`
 例如
 查看pod名称为`helloworld-k8s-6fff87fc75-89j9m`的详细信息
 `kubectl describe pods helloworld-k8s-6fff87fc75-89j9m`
 
-** 3. 创建资源 **
+**3. 创建资源 **
 `kubectl create -f <resourceFile>`
 
 例如：
@@ -240,10 +250,10 @@ kubernetes包括如下几个常用资源对象
 
 `kubectl create -f bus_deployment.yaml`
 
-** 4. 更新资源 **
+**4. 更新资源 **
 `kubectl apply -f <resourceFile>`
 
-** 5. 删除资源 **
+**5. 删除资源 **
 `kubectl delete -f <resourceFile>`
 
 我们还可以使用kubernetes Restful API操作资源。
