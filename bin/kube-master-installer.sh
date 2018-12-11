@@ -49,7 +49,7 @@ function echo_logo()
 #check systemc version
 function checkSystemVersion(){
   centosv=`cat /etc/redhat-release`
-  iscentos=`cat /etc/redhat-release | egrep 'CentOS Linux release 7\.[4-9]' | wc -l`
+  iscentos=`cat /etc/redhat-release | egrep 'CentOS Linux release 7\.[3-9]' | wc -l`
   if [ $iscentos -eq 0 ]
   then
     error_log "[Error] Please use CentOS 7.4 or higher version"
