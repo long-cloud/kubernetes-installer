@@ -54,6 +54,12 @@ function checkSystemVersion(){
 #check IP address
 function checkIPAddress(){
   local IP=$1
+  
+  if [ $IP == "" ]; then
+    error_log "Please input the IP of Master node!"
+    exit 1
+  fi
+  
   VALID_CHECK=$(echo $IP|awk -F. '$1<=255&&$2<=255&&$3<=255&&$4<=255{print "yes"}')
 
   if echo $IP|grep -E "^[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}$" >/dev/null; then
@@ -102,7 +108,12 @@ gpgkey=https://yum.dockerproject.org/gpg
 EOF
 
    yum -y install docker-engine-1.13.0-1.el7.centos
-
+   
+    if [ $? -ne 0 ]
+      then
+        error_log "Install docker fail!"
+        exit 1
+    fi
 fi
 
   info_log "Configure docker as systemd service"
@@ -156,6 +167,7 @@ function prepare_kube_install_environment()
   info_log "Close system's swap"
   swapoff -a
   sed -i "s/\/dev\/mapper\/centos-swap/\#\/dev\/mapper\/centos-swap/g" /etc/fstab
+  sed -i "s/\/dev\/mapper\/cl-swap/\#\/dev\/mapper\/cl-swap/g" /etc/fstab
   mount -a
 
   mkdir -p /etc/kubernetes/
@@ -209,7 +221,7 @@ EOF
 
 function install_kube_kubelet()
 {
-
+  mkdir -p /var/lib/kubelet
   systemctl stop kubelet > /dev/null
 
   cp $TEMP_DIR/kubernetes/server/bin/kubelet /usr/bin/
@@ -237,7 +249,7 @@ ExecStart=/usr/bin/kubelet \
     $KUBELET_POD_INFRA_CONTAINER \
     $KUBELET_KUBECONFIG \
     $KUBELET_ARGS
-#Restart=on-failure
+Restart=on-failure
 
 [Install]
 WantedBy=multi-user.target

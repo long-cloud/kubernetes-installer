@@ -63,7 +63,7 @@ function checkSystemVersion(){
 function checkIPAddress(){
   local IP=$1
 
-  if [ $IP =="" ]; then
+  if [ $IP == "" ]; then
     error_log "Please input the IP of Master node!"
     exit 1
   fi
@@ -87,13 +87,13 @@ function checkIPAddress(){
 
 function stdoutLogo()
 {
-  echo_log "************************************************************"
-  echo_log "*                                                          *"
-  echo_log "*             LongCloud kubernetes Installer               *"
-  echo_log "*                                                          *"
-  echo_log "*                 (kubernetes v1.11.4)                     *"
-  echo_log "*                                                          *"
-  echo_log "************************************************************"
+  echo_logo "************************************************************"
+  echo_logo "*                                                          *"
+  echo_logo "*             LongCloud kubernetes Installer               *"
+  echo_logo "*                                                          *"
+  echo_logo "*                 (kubernetes v1.11.4)                     *"
+  echo_logo "*                                                          *"
+  echo_logo "************************************************************"
 
 }
 
@@ -144,6 +144,7 @@ function prepare_kube_install_environment()
   info_log "Close system's swap"
   swapoff -a
   sed -i "s/\/dev\/mapper\/centos-swap/\#\/dev\/mapper\/centos-swap/g" /etc/fstab
+  sed -i "s/\/dev\/mapper\/cl-swap/\#\/dev\/mapper\/cl-swap/g" /etc/fstab
   mount -a
 
   mkdir -p /etc/kubernetes/
@@ -332,7 +333,6 @@ function install_kubernetes_dashboard()
    
    sed -e "s/\$REGISTRY_IP/$1/g" -e "s/\$MASTER_IP/$1/g" $CONF_DIR/kubernetes-dashboard.yaml > $TEMP_DIR/kubernetes-dashboard.yaml
    kubectl apply -f $TEMP_DIR/kubernetes-dashboard.yaml
-   kubectl apply -f $CONF_DIR/kubernetes-dashboard-admin.rbac.yaml
 }
 
 

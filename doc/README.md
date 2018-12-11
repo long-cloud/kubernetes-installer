@@ -95,7 +95,10 @@ jenkins首次登陆后，需要进行如下配置
 
 jenkins安装成功后，管理员密码默认写入到文件中，您可通过如下命令获取密码。登录master节点，执行如下命令
 
+````
 docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
+````
+
 使用此密码jenkins。
 
 **2\.2 安装插件**
