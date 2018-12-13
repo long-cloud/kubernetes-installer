@@ -59,6 +59,8 @@ hostname <your_hostname>
 
 修改`/etc/hostname`文件，使其永久生效。
 
+**注意：主机名格式：由英文小写字母、数字和 “-” 组成，以字母或数字开头。例如：longcloud01, longcloud-01。**
+
 **4. 配置hosts文件。**
 
 新增如下解析
@@ -287,6 +289,14 @@ kubernetes包括如下几个常用资源对象
 
 修改kubernetes service网段。修改`/etc/kubernetes/apiserver`配置文件中的`KUBE_SERVICE_ADDRESSES_RANGE`配置，将此地址网段修改为期望的地址网段。
 修改后执行`systemctl restart kube-apiserver kube-controller-manager kube-scheduler`重启此三个服务。
+
+2. 最终提示安装成功，但是dashboard与jenkins地址无法访问？
+
+答： 请浏览安装日志。找到有明显失败或错误提示的日志。
+
+常见的错误
+
+1. etcd服务安装失败：执行`rm -rf /var/lib/etcd/default.etcd/*`删除etcd数据文件后重新安装。
 
 
 
