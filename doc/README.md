@@ -192,7 +192,8 @@ current-context: local
 ````
 
 保存kubeconfig后，按照如下配置
-![](/assets/11.png)
+
+![](assets/11.png)
 
 配置完成后，保存任务配置信息。
 
