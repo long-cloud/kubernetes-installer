@@ -126,9 +126,10 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 
 **2\.4 配置Build Timestamp插件**
 
-此时间戳将作为docker镜像的tag。
+此时间戳将作为docker镜像的tag。时间戳格式：yyyyMMddHHmmss
 
 打开“系统管理”->“系统设置”。
+
 ![](assets/4.png)
 
 **2\.5 配置全局maven**
@@ -153,7 +154,7 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 **3\.3 选择源代码仓库地址**
 
 此处，我们演示的git仓库地址为：https://github.com/long-cloud/helloworld-k8s.git
-![](/assets/3.png)
+![](assets/3.png)
 
 **3\.4增加构建步骤-maven打包**
 
@@ -169,7 +170,7 @@ docker exec jenkins cat /var/jenkins_home/secrets/initialAdminPassword
 **3\.6增加构建步骤-Deploy to Kubernetes**
 
 点击“增加构建步骤”->“Deploy to Kubernetes”。
-![](/assets/9.png)
+![](assets/9.png)
 
 新增Kubeconfig，点击“Add”->"jenkins"。如下图所示
 ![](assets/10.png)
